@@ -93,12 +93,19 @@ namespace FarmingEngine
                     {
                         InventoryItemData item = pair.Value;
                         ItemData idata = ItemData.Get(item?.item_id);
-                        bool can_sell = CanSell(idata);
-                        ShopSlot slot = sell_slots[index];
-                        slot.SetSellSlot(idata, idata.sell_cost, item.quantity, can_sell);
-                        slot.SetSelected(selected == slot);
+                        if (idata != null) // 跳过数据缺失的物品（如旧存档中的失效物品）
+                        {
+                            bool can_sell = CanSell(idata);
+                            ShopSlot slot = sell_slots[index];
+                            slot.SetSellSlot(idata, idata.sell_cost, item.quantity, can_sell);
+                            slot.SetSelected(selected == slot);
+                            index++;
+                        }
                     }
-                    index++;
+                    else
+                    {
+                        index++;
+                    }
                 }
 
                 // 更新物品描述

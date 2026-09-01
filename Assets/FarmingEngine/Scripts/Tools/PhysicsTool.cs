@@ -157,11 +157,10 @@ namespace FarmingEngine
         {
             uint bits = (uint)mask.value;
             List<int> layers = new List<int>();
-            for (int i = 31; bits > 0; i--)
+            for (int i = 31; i >= 0; i--)
             {
-                if ((bits >> i) > 0)
+                if ((bits & (1u << i)) != 0)
                 {
-                    bits = (bits << (32 - i)) >> (32 - i);
                     layers.Add(i);
                 }
             }

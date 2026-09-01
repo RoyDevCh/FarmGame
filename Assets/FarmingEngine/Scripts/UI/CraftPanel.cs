@@ -109,10 +109,11 @@ namespace FarmingEngine
                 selection_index = Mathf.Clamp(selection_index, 0, CountActiveSlots() - 1); // 限制选择索引范围
 
                 UISlot slot = GetSelectSlot(); // 获取当前选中的槽位
-                if (prev_slot != slot || !sub_panel.IsVisible())
+                if (prev_slot != slot || sub_panel == null || !sub_panel.IsVisible())
                 {
                     OnClick(slot); // 点击当前槽位
-                    sub_panel.selection_index = 0; // 重置子面板选择索引
+                    if (sub_panel != null)
+                        sub_panel.selection_index = 0; // 重置子面板选择索引
                     prev_slot = slot;
                 }
             }

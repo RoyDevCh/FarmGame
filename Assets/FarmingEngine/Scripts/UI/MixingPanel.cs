@@ -134,8 +134,9 @@ namespace FarmingEngine
             {
                 if (slot.GetItem() == item && quantity > 0)
                 {
-                    quantity -= slot.GetQuantity(); // 减少数量
-                    UseItem(slot, slot.GetQuantity()); // 使用物品
+                    int remove = Mathf.Min(quantity, slot.GetQuantity()); // 只移除所需数量
+                    quantity -= remove;
+                    UseItem(slot, remove); // 使用物品
                 }
             }
         }
@@ -151,8 +152,9 @@ namespace FarmingEngine
             {
                 if (slot.GetItem() != null && slot.GetItem().HasGroup(group) && quantity > 0)
                 {
-                    quantity -= slot.GetQuantity(); // 减少数量
-                    UseItem(slot, slot.GetQuantity()); // 使用物品
+                    int remove = Mathf.Min(quantity, slot.GetQuantity()); // 只移除所需数量
+                    quantity -= remove;
+                    UseItem(slot, remove); // 使用物品
                 }
             }
         }

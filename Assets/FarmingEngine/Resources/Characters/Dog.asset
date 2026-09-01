@@ -16,7 +16,8 @@ MonoBehaviour:
   title: Dog
   icon: {fileID: 21300000, guid: 06a620b37f6e4855a5aa9c03ef873b60, type: 3}
   desc: A pet to help you!
-  groups: []
+  groups:
+  - {fileID: 11400000, guid: ac998e4eeb8f0b743977b6e978e94583, type: 2}
   craftable: 1
   craft_quantity: 1
   craft_duration: 0

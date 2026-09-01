@@ -652,9 +652,9 @@ namespace FarmingEngine
         //Return inventory that can take item (main one first, then bag)
         public InventoryData GetValidInventory(ItemData item, int quantity)
         {
-            if (InventoryData.CanTakeItem(item.id, quantity))
+            if (item != null && InventoryData.CanTakeItem(item.id, quantity))
                 return InventoryData;
-            else if(BagData != null && BagData.CanTakeItem(item.id, quantity))
+            else if(item != null && BagData != null && BagData.CanTakeItem(item.id, quantity))
                 return BagData;
             return null;
         }

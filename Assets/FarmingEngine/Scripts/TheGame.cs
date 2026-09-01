@@ -76,7 +76,7 @@ namespace FarmingEngine
                             if (dir.magnitude > 0.1f)
                             {
                                 player.transform.rotation = Quaternion.LookRotation(dir.normalized, Vector3.up);
-                                player.FaceTorward(transform.position + dir.normalized);
+                                player.FaceTorward(pos + dir.normalized); // 面向入口方向（以玩家出生点为基准）
                             }
                             TheCamera.Get().MoveToTarget(pos);
                         }
