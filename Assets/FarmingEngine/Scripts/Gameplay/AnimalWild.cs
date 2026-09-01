@@ -327,7 +327,7 @@ namespace FarmingEngine
                                 {
                                     if (character.GetDestructible().target_group != this.destruct.target_group) // 不在同一个队伍不害怕
                                     {
-                                        attack_target = destruct;
+                                        attack_target = selectable.Destructible; // 逃离威胁对象自身，而不是自己
                                         player_target = null;
                                         min_dist = dir.magnitude;
                                     }

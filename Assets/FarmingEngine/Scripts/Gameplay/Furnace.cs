@@ -110,7 +110,7 @@ namespace FarmingEngine
                 if (current_quantity < quantity_max && quantity > 0)
                 {
                     int max = quantity_max - current_quantity; // 剩余的最大空间
-                    int quant = Mathf.Min(max, quantity + current_quantity); // 不能放置超过最大限制的数量
+                    int quant = Mathf.Min(max, quantity); // 不能放置超过剩余空间的数量
 
                     prev_item = item;
                     current_item = create;
@@ -120,7 +120,7 @@ namespace FarmingEngine
 
                     PlayerData.Get().SetCustomFloat(GetTimerUID(), timer);
                     PlayerData.Get().SetCustomFloat(GetDurationUID(), duration);
-                    PlayerData.Get().SetCustomInt(GetQuantityUID(), quant);
+                    PlayerData.Get().SetCustomInt(GetQuantityUID(), current_quantity);
                     PlayerData.Get().SetCustomString(GetItemUID(), create.id);
 
                     // 如果存在进度条预制体并且加工持续时间大于0.1秒，则实例化进度条

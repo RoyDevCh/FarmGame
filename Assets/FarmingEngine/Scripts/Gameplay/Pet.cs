@@ -57,6 +57,7 @@ namespace FarmingEngine
         private bool follow = false;             // 是否在跟随状态
         private float state_timer = 0f;          // 状态计时器
         private bool force_action = false;       // 是否强制执行行动
+        private bool is_digging = false;         // 是否正在挖掘（防止协程重复启动）
 
         void Awake()
         {
@@ -137,8 +138,9 @@ namespace FarmingEngine
                 }
 
                 Vector3 dir = action_target.transform.position - transform.position;
-                if (dir.magnitude < 1f)
+                if (dir.magnitude < 1f && !is_digging)
                 {
+                    is_digging = true; // 标记开始挖掘，避免每帧重复触发
                     character.Stop(); // 停止移动
                     character.FaceTorward(action_target.transform.position); // 面向挖掘目标
 
@@ -350,6 +352,7 @@ namespace FarmingEngine
             action_target = null; // 清空行动目标
             force_action = false; // 取消强制行动状态
             follow = false; // 取消跟随状态
+            is_digging = false; // 重置挖掘状态
             ChangeState(PetState.Idle); // 切换至空闲状态
         }
 
