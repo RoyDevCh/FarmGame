@@ -77,6 +77,57 @@ Assets/FarmingEngine/
 9. 制作面板在玩家被销毁后空引用（`CraftPanel.cs`）
 10. 场景切换后角色出生朝向计算使用了错误的位置基准（`TheGame.cs`）
 
+## 路线图：LiveOps 活动系统设计（提案，尚未实现）
+
+> 以下为规划中系统的设计说明，用于指导后续开发；当前版本不包含活动系统。
+
+### 目标
+
+在保持**单机可玩、离线可用**的前提下，让运营无需重新出包即可上线限时活动：节日庆典、双倍掉落、限时商店、连续登录奖励等。
+
+### 核心概念
+
+- **EventData（ScriptableObject）**：一条活动配置，存放于 `Resources/Events/`，主要字段：
+  - `id`（唯一标识）、`title`、`icon`
+  - 调度：`start_day` / `end_day`（游戏内天数）；可选 `real_date_start/end`（真实日历，默认关闭）
+  - 类型：`Festival`（节日装饰与 NPC）、`DropBoost`（掉落倍率）、`FlashShop`（限时商店）、`LoginReward`（每日登录奖励表）
+  - `effects`：复用现有 `BonusEffectData` 的效果结构，不新造奖励体系
+- **EventManager**：常驻组件，与 `TheGame` 同级；订阅 `onNewDay` 在每天开始时结算活动状态，`onSkipTime`（睡觉跳时间）时同步补算，避免跳天漏发/多发
+- **远程配置**：活动表 JSON 位于 `StreamingAssets/Events/events.json`；启动时尝试拉取远端版本覆盖默认值，失败则回退到打包默认——保证无网环境完整可玩
+
+### 与现有系统的集成点
+
+| 系统 | 集成方式 |
+|---|---|
+| 时间 | 复用 `TheGame` 的 `day`/`day_time`，不使用 `DateTime`，避免改档时钟回拨影响活动；倒计时 UI 扩展 `TimeClockUI` |
+| 掉落 | `DropBoost` 在 `LootData` 生成入口处乘算倍率 |
+| 商店 | `FlashShop` 复用 `ShopPanel` + `ShopNPC`，按活动 id 切换商品表 |
+| 奖励 | 领取标记写入 `PlayerData`（如 `SetCustomBool("event_<id>_claimed_<day>")`），保证幂等，刷档也无法重复领取 |
+| 天气 | 活动可引用 `WeatherEffect`，组合出"雪季钓鱼大赛"之类的联动活动 |
+
+### 活动表示例（events.json）
+
+```json
+{
+  "events": [
+    {
+      "id": "harvest_festival",
+      "type": "Festival",
+      "start_day": 28,
+      "end_day": 30,
+      "effects": [{ "bonus": "farming_xp", "value": 2.0 }],
+      "shop_override": "festival_shop",
+      "reward_table": "festival_daily"
+    }
+  ]
+}
+```
+
+### 兼容与边界
+
+- **存档兼容**：存档只记录活动 id 与领取标记，不序列化完整配置；活动表更新后旧档天然兼容
+- **单机边界**：以"不破坏存档、奖励幂等"为目标，不做联网校验；后续如需联机，可将领取行为扩展为服务端校验的消息，接口保持不变
+
 ## 许可
 
 仅供学习交流使用。
